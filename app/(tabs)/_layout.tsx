@@ -25,8 +25,6 @@ const TabsLayout = () => {
         tabBarStyle: {
           position: "absolute",
           bottom: Math.max(insets.bottom, tabBar.horizontalInset),
-          marginHorizontal: tabBar.horizontalInset,
-          // paddingRight: tabBar.horizontalInset / 10,
           borderRadius: tabBar.radius,
           backgroundColor: colors.primary,
           borderTopWidth: 0,
@@ -35,7 +33,6 @@ const TabsLayout = () => {
           height: tabBar.height,
           paddingHorizontal: tabBar.itemPaddingVertical,
           paddingVertical: tabBar.itemPaddingVertical / 2,
-          // elevation: 0,
           overflow: "hidden",
           elevation: 6,
           shadowColor: colors.foreground,
@@ -48,7 +45,7 @@ const TabsLayout = () => {
         },
 
         tabBarItemStyle: {
-          paddingVertical: tabBar.height / 2 - tabBar.iconFrame / 1,
+          paddingVertical: tabBar.height / 2 - tabBar.iconFrame,
         },
         tabBarIconStyle: {
           width: tabBar.iconFrame,

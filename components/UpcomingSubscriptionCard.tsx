@@ -8,7 +8,7 @@ const UpcomingSubscriptionCard = ({
   price,
   daysLeft,
   icon,
-}: UpcomingSubscription) => {
+}: UpcomingSubscriptionCardProps) => {
   return (
     <View className="upcoming-card">
       <View className="upcoming-row">

@@ -76,7 +76,6 @@ export default function App() {
         ItemSeparatorComponent={() => <View className="h-2" />}
         ListHeaderComponent={renderHomeHeader}
         ListFooterComponent={<View className="h-4" />}
-        contentContainerClassName="pb-30"
         ListEmptyComponent={<Text className="home-empty-state">No subscriptions found.</Text>}
       />
     </SafeAreaView>
