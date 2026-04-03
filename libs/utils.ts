@@ -5,7 +5,7 @@ export const formatCurrency = (value: number, currency = "NGN"): string => {
     return new Intl.NumberFormat("en-NG", {
       style: "currency",
       currency,
-      minimumFractionDigits: 0, //2 for dollar
+      minimumFractionDigits: 0, // Keep NGN compact by default; switch this to 2 when formatting USD amounts.
       maximumFractionDigits: 2,
     }).format(value);
   } catch {
