@@ -51,7 +51,7 @@ export default function App() {
           ListEmptyComponent={<Text className="home-empty-state">No Upcoming subscription.</Text>}
         />
       </View>
-      <ListHeading title="All Subscription" />
+      <ListHeading title="All Subscriptions" />
     </>
   )
 

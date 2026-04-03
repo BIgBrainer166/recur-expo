@@ -2,7 +2,7 @@ import { tabs } from "@/constants/data"
 import { colors, components } from "@/constants/theme"
 import { clsx } from "clsx"
 import { Tabs } from "expo-router"
-import { Image, View } from "react-native"
+import { Image, View, useWindowDimensions } from "react-native"
 import { useSafeAreaInsets } from "react-native-safe-area-context"
 
 const tabBar = components.tabBar
@@ -17,6 +17,10 @@ const TabIcon = ({ focused, icon }: TabIconProps) => {
 }
 const TabsLayout = () => {
   const insets = useSafeAreaInsets()
+  const { width } = useWindowDimensions()
+  const tabBarWidth = Math.min(width - 64, 360)
+  const tabBarInset = Math.max((width - tabBarWidth) / 2, 0)
+
   return (
     <Tabs
       screenOptions={{
@@ -28,8 +32,8 @@ const TabsLayout = () => {
           borderRadius: tabBar.radius,
           backgroundColor: colors.primary,
           borderTopWidth: 0,
-          left: tabBar.horizontalInset,
-          right: tabBar.horizontalInset,
+          start: tabBarInset,
+          end: tabBarInset,
           height: tabBar.height,
           paddingHorizontal: tabBar.itemPaddingVertical,
           paddingVertical: tabBar.itemPaddingVertical / 2,
