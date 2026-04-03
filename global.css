@@ -275,7 +275,7 @@
   }
 
   .auth-card {
-    @apply mt-8 rounded-3xl border border-border bg-card p-5;
+    @apply mt-8 rounded-3xl border border-border bg-card p-5 shadow-sm;
   }
 
   .auth-form {
@@ -315,7 +315,7 @@
   }
 
   .auth-button-text {
-    @apply text-base font-sans-bold text-primary;
+    @apply text-base font-sans-bold text-white;
   }
 
   .auth-secondary-button {
@@ -348,6 +348,54 @@
 
   .auth-link {
     @apply text-sm font-sans-bold text-accent;
+  }
+
+  .auth-banner {
+    @apply rounded-2xl border px-4 py-3;
+  }
+
+  .auth-banner-error {
+    @apply border-destructive/20 bg-destructive/10;
+  }
+
+  .auth-banner-success {
+    @apply border-success/20 bg-success/10;
+  }
+
+  .auth-banner-text {
+    @apply text-sm font-sans-medium text-primary;
+  }
+
+  .auth-trust-row {
+    @apply mt-4 flex-row flex-wrap justify-center gap-2;
+  }
+
+  .auth-trust-chip {
+    @apply rounded-full border border-border bg-card px-3 py-2;
+  }
+
+  .auth-trust-chip-text {
+    @apply text-xs font-sans-semibold text-muted-foreground;
+  }
+
+  .auth-checkbox-row {
+    @apply mt-1 flex-row items-start gap-3;
+  }
+
+  .auth-checkbox {
+    @apply mt-0.5 size-5 items-center justify-center rounded-md border border-border bg-background;
+  }
+
+  .auth-checkbox-active {
+    @apply border-accent bg-accent;
+  }
+
+  .auth-checkbox-mark {
+    @apply text-xs font-sans-bold text-white;
+  }
+
+  .auth-legal-copy {
+    @apply flex-1 text-sm font-sans-medium text-muted-foreground;
   }
 
   .modal-overlay {

@@ -3,7 +3,7 @@
   "configVersion": 1,
   "workspaces": {
     "": {
-      "name": "recur",
+      "name": "billza",
       "dependencies": {
         "@clerk/expo": "^3.1.6",
         "@expo/vector-icons": "^15.0.3",

@@ -1,11 +1,11 @@
 {
   "expo": {
-    "name": "recur",
-    "slug": "recur",
+    "name": "Billza",
+    "slug": "billza",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "recur",
+    "scheme": "billza",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
