@@ -36,7 +36,7 @@ const SubscriptionCard = ({
           <Text numberOfLines={1} ellipsizeMode="tail" className="sub-meta">
             {category?.trim() ||
               plan?.trim() ||
-              (renewalDate ? formatSubscriptionDateTime(renewalDate) : "")}
+              (renewalDate ? formatSubscriptionDateTime(renewalDate) : "Not provided")}
           </Text>
         </View>
         <View className="sub-price-box">
@@ -44,7 +44,7 @@ const SubscriptionCard = ({
             {formatCurrency(price, currency)}
           </Text>
           <Text className="sub-billing" numberOfLines={1}>
-            {billing}
+            {billing?.trim() || "Not provided"}
           </Text>
         </View>
       </View>
