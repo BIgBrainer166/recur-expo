@@ -47,7 +47,7 @@
 
 @layer components {
   .tabs-icon {
-    @apply size-12 items-center justify-center;
+    @apply size-12 items-center justify-center pt-2;
   }
 
   .tabs-pill {

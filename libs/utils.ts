@@ -1,11 +1,11 @@
 import dayjs from "dayjs";
 
-export const formatCurrency = (value: number, currency = "USD"): string => {
+export const formatCurrency = (value: number, currency = "NGN"): string => {
   try {
-    return new Intl.NumberFormat("en-US", {
+    return new Intl.NumberFormat("en-NG", {
       style: "currency",
       currency,
-      minimumFractionDigits: 2,
+      minimumFractionDigits: 0, //2 for dollar
       maximumFractionDigits: 2,
     }).format(value);
   } catch {

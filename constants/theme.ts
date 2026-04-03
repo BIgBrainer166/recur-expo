@@ -10,7 +10,7 @@ export const colors = {
   success: "#16a34a",
   destructive: "#dc2626",
   subscription: "#8fd1bd",
-} as const;
+} as const
 
 export const spacing = {
   0: 0,
@@ -32,20 +32,22 @@ export const spacing = {
   20: 80,
   24: 96,
   30: 120,
-} as const;
+} as const
 
 export const components = {
   tabBar: {
-    height: spacing[18],
-    horizontalInset: spacing[5],
-    radius: spacing[8],
-    iconFrame: spacing[12],
+    height: 68,
+    horizontalInset: spacing[6],
+    verticalInset: spacing[3],
+    radius: 34,
+    iconFrame: spacing[11],
     itemPaddingVertical: spacing[2],
+    borderColor: "rgba(255, 255, 255, 0.08)",
   },
-} as const;
+} as const
 
 export const theme = {
   colors,
   spacing,
   components,
-} as const;
+} as const
