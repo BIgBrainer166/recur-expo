@@ -5,7 +5,6 @@ import { useUser } from "@clerk/expo"
 import {
   HOME_BALANCE,
   HOME_SUBSCRIPTIONS,
-  HOME_USER,
   UPCOMING_SUBSCRIPTIONS,
 } from "@/constants/data"
 import { icons } from "@/constants/icons"
@@ -26,7 +25,7 @@ export default function App() {
     user?.fullName?.trim() ||
     user?.firstName?.trim() ||
     user?.primaryEmailAddress?.emailAddress ||
-    HOME_USER.name
+    "Billza member"
   const avatarSource = user?.imageUrl ? { uri: user.imageUrl } : images.avatar
 
   const renderHomeHeader = () => (

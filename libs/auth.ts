@@ -41,6 +41,9 @@ type ClerkNavigateParams = {
   decorateUrl: (url: string) => string
 }
 
+export const getPostAuthHref = (session?: { currentTask?: unknown } | null): "/" | "/onboarding" =>
+  session?.currentTask ? "/onboarding" : "/"
+
 export const MIN_PASSWORD_LENGTH = 8
 
 export const normalizeEmail = (value: string) => value.trim().toLowerCase()
@@ -120,11 +123,30 @@ export const signUpNeedsEmailVerification = (signUp: SignUpLike) =>
 
 export const createAuthNavigate = (router: Router) => {
   return async ({ session, decorateUrl }: ClerkNavigateParams) => {
-    const nextPath: Href = session?.currentTask ? "/onboarding" : "/"
+    const nextPath = getPostAuthHref(session)
     const nextUrl = decorateUrl(nextPath)
 
     if (nextUrl.startsWith("http")) {
-      await Linking.openURL(nextUrl)
+      try {
+        await Linking.openURL(nextUrl)
+        return
+      } catch (error) {
+        console.warn("Failed to open external auth redirect URL", error)
+
+        const canOpenUrl = await Linking.canOpenURL(nextUrl)
+
+        if (canOpenUrl) {
+          try {
+            await Linking.openURL(nextUrl)
+            return
+          } catch (retryError) {
+            console.warn("Retrying external auth redirect URL failed", retryError)
+          }
+        }
+
+        router.replace(nextPath)
+      }
+
       return
     }
 
@@ -150,7 +172,6 @@ export const validateSignInForm = (values: {
 export const validateSignUpForm = (values: {
   emailAddress: string
   password: string
-  code: string
   firstName?: string
   lastName?: string
   username?: string

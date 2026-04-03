@@ -41,7 +41,7 @@ const SignUpScreen = () => {
   const [emailAddress, setEmailAddress] = useState("")
   const [password, setPassword] = useState("")
   const [code, setCode] = useState("")
-  const [legalAccepted, setLegalAccepted] = useState(true)
+  const [legalAccepted, setLegalAccepted] = useState(false)
   const [localErrors, setLocalErrors] = useState<LocalErrors>({})
   const [formMessage, setFormMessage] = useState<string | null>(null)
   const [verificationMessage, setVerificationMessage] = useState<string | null>(null)
@@ -89,7 +89,6 @@ const SignUpScreen = () => {
     }
 
     const nextLocalErrors = validateSignUpForm({
-      code,
       emailAddress,
       firstName,
       lastName,
@@ -386,8 +385,8 @@ const SignUpScreen = () => {
             {legalAcceptedError ? <Text className="auth-error">{legalAcceptedError}</Text> : null}
 
             <Pressable
-              className={`auth-button ${isBusy || !emailAddress.trim() || !password ? "auth-button-disabled" : ""}`}
-              disabled={isBusy || !emailAddress.trim() || !password}
+              className={`auth-button ${isBusy || !emailAddress.trim() || !password || !legalAccepted ? "auth-button-disabled" : ""}`}
+              disabled={isBusy || !emailAddress.trim() || !password || !legalAccepted}
               onPress={() => void handleCreateAccount()}
             >
               {isBusy ? (
