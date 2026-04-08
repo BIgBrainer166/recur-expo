@@ -13,7 +13,7 @@ type AuthTextFieldProps = TextInputProps & {
 
 const AuthTextField = forwardRef<TextInput, AuthTextFieldProps>(function AuthTextField(
   { label, error, helperText, secure = false, ...props },
-  ref,
+  ref
 ) {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false)
   const secureTextEntry = secure && !isPasswordVisible

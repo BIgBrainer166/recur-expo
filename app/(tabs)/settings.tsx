@@ -3,6 +3,7 @@ import Constants from "expo-constants"
 import { useClerk, useUser } from "@clerk/expo"
 import { useRouter } from "expo-router"
 import { styled } from "nativewind"
+import { usePostHog } from "posthog-react-native"
 import React, { useState } from "react"
 import { ActivityIndicator, Image, Pressable, Text, View } from "react-native"
 import { SafeAreaView as RNSafeAreaView } from "react-native-safe-area-context"
@@ -12,6 +13,7 @@ const Settings = () => {
   const router = useRouter()
   const { signOut } = useClerk()
   const { user } = useUser()
+  const posthog = usePostHog()
   const [isSigningOut, setIsSigningOut] = useState(false)
 
   const displayName =
@@ -22,7 +24,9 @@ const Settings = () => {
   const emailAddress = user?.primaryEmailAddress?.emailAddress || "No email address found"
   const avatarSource = user?.imageUrl ? { uri: user.imageUrl } : images.avatar
   const emailStatus =
-    user?.primaryEmailAddress?.verification?.status === "verified" ? "Verified email" : "Verification pending"
+    user?.primaryEmailAddress?.verification?.status === "verified"
+      ? "Verified email"
+      : "Verification pending"
   const memberSince = user?.createdAt
     ? new Intl.DateTimeFormat("en-US", { month: "short", year: "numeric" }).format(user.createdAt)
     : "Recently joined"
@@ -31,6 +35,8 @@ const Settings = () => {
   const handleSignOut = async () => {
     try {
       setIsSigningOut(true)
+      posthog.capture("user_signed_out")
+      posthog.reset()
       await signOut()
       router.replace("/sign-in")
     } finally {
@@ -58,12 +64,15 @@ const Settings = () => {
             <Text className="text-xs font-sans-semibold text-primary">{emailStatus}</Text>
           </View>
           <View className="rounded-full bg-background px-3 py-2">
-            <Text className="text-xs font-sans-semibold text-primary">Member since {memberSince}</Text>
+            <Text className="text-xs font-sans-semibold text-primary">
+              Member since {memberSince}
+            </Text>
           </View>
         </View>
 
         <Text className="mt-5 text-sm font-sans-medium text-muted-foreground">
-          Manage your account, jump back into key screens, and keep your billing workspace feeling tidy.
+          Manage your account, jump back into key screens, and keep your billing workspace feeling
+          tidy.
         </Text>
       </View>
 

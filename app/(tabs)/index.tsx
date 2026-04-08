@@ -2,17 +2,14 @@ import ListHeading from "@/components/ListHeading"
 import SubscriptionCard from "@/components/SubscriptionCard"
 import UpcomingSubscriptionCard from "@/components/UpcomingSubscriptionCard"
 import { useUser } from "@clerk/expo"
-import {
-  HOME_BALANCE,
-  HOME_SUBSCRIPTIONS,
-  UPCOMING_SUBSCRIPTIONS,
-} from "@/constants/data"
+import { HOME_BALANCE, HOME_SUBSCRIPTIONS, UPCOMING_SUBSCRIPTIONS } from "@/constants/data"
 import { icons } from "@/constants/icons"
 import images from "@/constants/images"
 import "@/global.css"
 import { formatCurrency } from "@/libs/utils"
 import dayjs from "dayjs"
 import { styled } from "nativewind"
+import { usePostHog } from "posthog-react-native"
 import { useState } from "react"
 import { FlatList, Image, Text, View } from "react-native"
 import { SafeAreaView as RNSafeAreaView } from "react-native-safe-area-context"
@@ -20,6 +17,7 @@ import { SafeAreaView as RNSafeAreaView } from "react-native-safe-area-context"
 const SafeAreaView = styled(RNSafeAreaView)
 export default function App() {
   const { user } = useUser()
+  const posthog = usePostHog()
   const [expandedSubscriptionId, setExpandedSubscriptionId] = useState<string | null>(null)
   const displayName =
     user?.fullName?.trim() ||
@@ -71,9 +69,18 @@ export default function App() {
           <SubscriptionCard
             {...item}
             expanded={expandedSubscriptionId === item.id}
-            onPress={() =>
+            onPress={() => {
+              const isExpanding = expandedSubscriptionId !== item.id
               setExpandedSubscriptionId((currentId) => (currentId === item.id ? null : item.id))
-            }
+              if (isExpanding) {
+                posthog.capture("subscription_expanded", {
+                  subscription_id: item.id,
+                  subscription_name: item.name,
+                  subscription_category: item.category,
+                  source: "home_screen",
+                })
+              }
+            }}
           />
         )}
         extraData={expandedSubscriptionId}
