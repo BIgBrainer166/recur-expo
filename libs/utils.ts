@@ -1,4 +1,4 @@
-import dayjs from "dayjs";
+import dayjs from "dayjs"
 
 export const formatCurrency = (value: number, currency = "NGN"): string => {
   try {
@@ -7,21 +7,19 @@ export const formatCurrency = (value: number, currency = "NGN"): string => {
       currency,
       minimumFractionDigits: 0, // Keep NGN compact by default; switch this to 2 when formatting USD amounts.
       maximumFractionDigits: 2,
-    }).format(value);
+    }).format(value)
   } catch {
-    return value.toFixed(2);
+    return value.toFixed(2)
   }
-};
+}
 
 export const formatSubscriptionDateTime = (value?: string): string => {
-  if (!value) return "Not provided";
-  const parsedDate = dayjs(value);
-  return parsedDate.isValid()
-    ? parsedDate.format("MM/DD/YYYY")
-    : "Not provided";
-};
+  if (!value) return "Not provided"
+  const parsedDate = dayjs(value)
+  return parsedDate.isValid() ? parsedDate.format("MM/DD/YYYY") : "Not provided"
+}
 
 export const formatStatusLabel = (value?: string): string => {
-  if (!value) return "Unknown";
-  return value.charAt(0).toUpperCase() + value.slice(1);
-};
+  if (!value) return "Unknown"
+  return value.charAt(0).toUpperCase() + value.slice(1)
+}

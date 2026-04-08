@@ -11,21 +11,16 @@ import {
 } from "@/libs/auth"
 import { useSignIn } from "@clerk/expo"
 import { Link, useRouter } from "expo-router"
+import { usePostHog } from "posthog-react-native"
 import { useRef, useState } from "react"
-import {
-  ActivityIndicator,
-  Keyboard,
-  Pressable,
-  Text,
-  TextInput,
-  View,
-} from "react-native"
+import { ActivityIndicator, Keyboard, Pressable, Text, TextInput, View } from "react-native"
 
 type LocalErrors = Partial<Record<"emailAddress" | "password" | "code", string>>
 
 const SignInScreen = () => {
   const { signIn, errors, fetchStatus } = useSignIn()
   const router = useRouter()
+  const posthog = usePostHog()
 
   const passwordRef = useRef<TextInput>(null)
   const codeRef = useRef<TextInput>(null)
@@ -42,17 +37,26 @@ const SignInScreen = () => {
   const globalErrorMessage = formMessage || getHookErrorMessage(errors)
 
   const emailError =
-    localErrors.emailAddress || errors.fields.identifier?.longMessage || errors.fields.identifier?.message
+    localErrors.emailAddress ||
+    errors.fields.identifier?.longMessage ||
+    errors.fields.identifier?.message
   const passwordError =
     localErrors.password || errors.fields.password?.longMessage || errors.fields.password?.message
-  const codeError = localErrors.code || errors.fields.code?.longMessage || errors.fields.code?.message
+  const codeError =
+    localErrors.code || errors.fields.code?.longMessage || errors.fields.code?.message
 
   const handleFinalize = async () => {
     const { error } = await signIn.finalize({ navigate: createAuthNavigate(router) })
 
     if (error) {
       setFormMessage(getActionErrorMessage(error))
+      posthog.capture("user_sign_in_failed", { error_message: getActionErrorMessage(error) })
+      return
     }
+
+    const email = normalizeEmail(emailAddress)
+    posthog.identify(email, { $set: { email } })
+    posthog.capture("user_signed_in", { method: "password" })
   }
 
   const handleSubmit = async () => {
@@ -77,6 +81,7 @@ const SignInScreen = () => {
 
     if (error) {
       setFormMessage(getActionErrorMessage(error))
+      posthog.capture("user_sign_in_failed", { error_message: getActionErrorMessage(error) })
       return
     }
 
@@ -265,7 +270,11 @@ const SignInScreen = () => {
               disabled={isBusy || !emailAddress.trim() || !password}
               onPress={() => void handleSubmit()}
             >
-              {isBusy ? <ActivityIndicator color="#ffffff" /> : <Text className="auth-button-text">Sign in</Text>}
+              {isBusy ? (
+                <ActivityIndicator color="#ffffff" />
+              ) : (
+                <Text className="auth-button-text">Sign in</Text>
+              )}
             </Pressable>
 
             <View className="auth-link-row">

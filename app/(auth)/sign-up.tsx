@@ -11,23 +11,21 @@ import {
 } from "@/libs/auth"
 import { useSignUp } from "@clerk/expo"
 import { Link, useRouter } from "expo-router"
+import { usePostHog } from "posthog-react-native"
 import { useRef, useState } from "react"
-import {
-  ActivityIndicator,
-  Keyboard,
-  Pressable,
-  Text,
-  TextInput,
-  View,
-} from "react-native"
+import { ActivityIndicator, Keyboard, Pressable, Text, TextInput, View } from "react-native"
 
 type LocalErrors = Partial<
-  Record<"emailAddress" | "password" | "code" | "firstName" | "lastName" | "username" | "legalAccepted", string>
+  Record<
+    "emailAddress" | "password" | "code" | "firstName" | "lastName" | "username" | "legalAccepted",
+    string
+  >
 >
 
 const SignUpScreen = () => {
   const { signUp, errors, fetchStatus } = useSignUp()
   const router = useRouter()
+  const posthog = usePostHog()
 
   const lastNameRef = useRef<TextInput>(null)
   const usernameRef = useRef<TextInput>(null)
@@ -57,25 +55,46 @@ const SignUpScreen = () => {
   const globalErrorMessage = formMessage || getHookErrorMessage(errors)
 
   const firstNameError =
-    localErrors.firstName || errors.fields.firstName?.longMessage || errors.fields.firstName?.message
+    localErrors.firstName ||
+    errors.fields.firstName?.longMessage ||
+    errors.fields.firstName?.message
   const lastNameError =
     localErrors.lastName || errors.fields.lastName?.longMessage || errors.fields.lastName?.message
   const usernameError =
     localErrors.username || errors.fields.username?.longMessage || errors.fields.username?.message
   const emailError =
-    localErrors.emailAddress || errors.fields.emailAddress?.longMessage || errors.fields.emailAddress?.message
+    localErrors.emailAddress ||
+    errors.fields.emailAddress?.longMessage ||
+    errors.fields.emailAddress?.message
   const passwordError =
     localErrors.password || errors.fields.password?.longMessage || errors.fields.password?.message
-  const codeError = localErrors.code || errors.fields.code?.longMessage || errors.fields.code?.message
+  const codeError =
+    localErrors.code || errors.fields.code?.longMessage || errors.fields.code?.message
   const legalAcceptedError =
-    localErrors.legalAccepted || errors.fields.legalAccepted?.longMessage || errors.fields.legalAccepted?.message
+    localErrors.legalAccepted ||
+    errors.fields.legalAccepted?.longMessage ||
+    errors.fields.legalAccepted?.message
 
   const handleFinalize = async () => {
     const { error } = await signUp.finalize({ navigate: createAuthNavigate(router) })
 
     if (error) {
       setFormMessage(getActionErrorMessage(error))
+      posthog.capture("user_sign_up_failed", { error_message: getActionErrorMessage(error) })
+      return
     }
+
+    const email = normalizeEmail(emailAddress)
+    posthog.identify(
+      email,
+      {
+        email,
+        first_name: firstName.trim() || undefined,
+        last_name: lastName.trim() || undefined,
+      },
+      { first_sign_up_date: new Date().toISOString() }
+    )
+    posthog.capture("user_signed_up", { method: "password" })
   }
 
   const handleCreateAccount = async () => {
@@ -83,7 +102,7 @@ const SignUpScreen = () => {
 
     if (requiresPhoneNumber) {
       setFormMessage(
-        "Phone number sign up is required for this workspace right now. Update the auth settings or add phone support before continuing.",
+        "Phone number sign up is required for this workspace right now. Update the auth settings or add phone support before continuing."
       )
       return
     }
@@ -118,6 +137,7 @@ const SignUpScreen = () => {
 
     if (error) {
       setFormMessage(getActionErrorMessage(error))
+      posthog.capture("user_sign_up_failed", { error_message: getActionErrorMessage(error) })
       return
     }
 
@@ -134,13 +154,17 @@ const SignUpScreen = () => {
         return
       }
 
-      setVerificationMessage(`We sent a 6-digit verification code to ${normalizeEmail(emailAddress)}.`)
+      setVerificationMessage(
+        `We sent a 6-digit verification code to ${normalizeEmail(emailAddress)}.`
+      )
       setCode("")
       return
     }
 
     if (signUp.missingFields.length > 0) {
-      setFormMessage("A few required account fields are still missing. Review the form and try again.")
+      setFormMessage(
+        "A few required account fields are still missing. Review the form and try again."
+      )
       return
     }
 
@@ -378,7 +402,8 @@ const SignUpScreen = () => {
                 {legalAccepted ? <Text className="auth-checkbox-mark">✓</Text> : null}
               </View>
               <Text className="auth-legal-copy">
-                I agree to the Terms and Privacy Policy and understand this account protects my billing history.
+                I agree to the Terms and Privacy Policy and understand this account protects my
+                billing history.
               </Text>
             </Pressable>
 

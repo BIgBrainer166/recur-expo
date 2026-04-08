@@ -3,7 +3,12 @@ import * as Linking from "expo-linking"
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
-type AuthFieldErrors = Partial<Record<"emailAddress" | "password" | "code" | "firstName" | "lastName" | "username" | "legalAccepted", string>>
+type AuthFieldErrors = Partial<
+  Record<
+    "emailAddress" | "password" | "code" | "firstName" | "lastName" | "username" | "legalAccepted",
+    string
+  >
+>
 
 type HookErrors = {
   global: Array<{
@@ -79,7 +84,7 @@ export const getActionErrorMessage = (error: ClerkActionError) => {
 
   if (Array.isArray(error.errors)) {
     const firstNestedError = error.errors.find(
-      (item) => typeof item?.longMessage === "string" || typeof item?.message === "string",
+      (item) => typeof item?.longMessage === "string" || typeof item?.message === "string"
     )
 
     if (typeof firstNestedError?.longMessage === "string" && firstNestedError.longMessage) {
@@ -154,10 +159,7 @@ export const createAuthNavigate = (router: Router) => {
   }
 }
 
-export const validateSignInForm = (values: {
-  emailAddress: string
-  password: string
-}) => {
+export const validateSignInForm = (values: { emailAddress: string; password: string }) => {
   const errors: AuthFieldErrors = {}
 
   const emailError = validateEmail(values.emailAddress)
