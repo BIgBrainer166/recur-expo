@@ -85,14 +85,15 @@ const SignUpScreen = () => {
     }
 
     const email = normalizeEmail(emailAddress)
-    posthog.identify(email, {
-      $set: {
+    posthog.identify(
+      email,
+      {
         email,
         first_name: firstName.trim() || undefined,
         last_name: lastName.trim() || undefined,
       },
-      $set_once: { first_sign_up_date: new Date().toISOString() },
-    })
+      { first_sign_up_date: new Date().toISOString() }
+    )
     posthog.capture("user_signed_up", { method: "password" })
   }
 
